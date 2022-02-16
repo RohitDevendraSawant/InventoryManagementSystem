@@ -4,6 +4,8 @@ const Item = require("../models/Items");
 const fetchUser = require("../middleware/fetchUser");
 const { body, validationResult } = require("express-validator");
 const Items = require("../models/Items");
+const { findByIdAndUpdate } = require("../models/Items");
+const res = require("express/lib/response");
 
 // Add items using POST, login required
 router.post(
@@ -41,7 +43,6 @@ router.post(
 
 // Get items using GET, login required
 router.get("/getItems/", fetchUser, async (req, res) => {
-  let success = false;
   try {
     const {lab, name, category} = req.body;
     if (lab && category) {
@@ -69,5 +70,30 @@ router.get("/getItems/", fetchUser, async (req, res) => {
     res.status(500).json("Internal server error. ");
   }
 });
+
+// Update items using PUT, login required
+router.put("/updateItems/:id",fetchUser,async (req,res)=>{
+  try{
+    const {lab,name,category,quantity,date} = req.body;
+    const newItem = {};
+    if(lab){newItem.lab = lab};
+    if (name){newItem.name = name};
+    if (category){newItem.category = category}; 
+    if (quantity){newItem.quantity = quantity}; 
+    if (date){newItem.date = date}; 
+    let item = await Item.findById(req.params.id);
+    if(!item){
+      return res.status(400).send("Item not found");
+    }
+    
+    let note = await Item.findByIdAndUpdate(req.params.id,{$set:newItem},{new:true});
+    res.json({note});
+}
+catch(error){
+  console.log(error.message);
+  res.status(500).json("Internal server error");
+}
+})
+
 
 module.exports = router;
