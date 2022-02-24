@@ -16,6 +16,9 @@ router.post(
     body("machineNumber", "Machine number can't be empty.").exists(),
     body("name", "Username can't be empty.").exists(),
     body("category", "Category can't be empty.").exists(),
+    body("subcategory", "subcategory can't be empty.").exists(),
+    body("price", "Price can't be empty.").exists(),
+
   ],
   async (req, res) => {
     let success = false;
@@ -24,12 +27,14 @@ router.post(
       return res.status(400).json({ success, errors: errors.array() });
     }
     try {
-      const { lab,machineNumber, name,category, date } = req.body;
+      const { lab,machineNumber, name,category,subcategory,price, date } = req.body;
       const item = new Item({
         lab,
         machineNumber,
         name,
         category,
+        subcategory,
+        price,
         date,
       });
       const addItem = await item.save();
@@ -44,8 +49,12 @@ router.post(
 // Get items using GET, login required
 router.get("/getItems/", fetchUser, async (req, res) => {
   try {
-    const {lab, machineNumber,name, category} = req.body;
+    const {lab, machineNumber,name, category,subcategory} = req.body;
     if (lab && category) {
+      let items = await Item.find({$and:[{lab : lab},{category : category}] });
+      return res.json(items);
+    }
+    else if (lab && subcategory) {
       let items = await Item.find({$and:[{lab : lab},{category : category}] });
       return res.json(items);
     }
@@ -59,6 +68,10 @@ router.get("/getItems/", fetchUser, async (req, res) => {
     }
     else if (category) {
       let items = await Item.find({category : category});
+      return res.json(items)
+    }
+    else if (subcategory){
+      let items = await Item.find({subcategory: subcategory});
       return res.json(items)
     }
     else if (machineNumber) {
@@ -78,13 +91,16 @@ router.get("/getItems/", fetchUser, async (req, res) => {
 // Update items using PUT, login required
 router.put("/updateItems/:id",fetchUser,async (req,res)=>{
   try{
-    const {lab,machineNumber,name,category,date} = req.body;
+    const {lab,machineNumber,name,category,subcategory,price,date} = req.body;
     const newItem = {};
     if(lab){newItem.lab = lab};
     if(machineNumber){newItem.machineNumber = machineNumber};
     if (name){newItem.name = name};
     if (category){newItem.category = category}; 
-    if (date){newItem.date = date}; 
+    if (subcategory){newItem.subcategory = subcategory};
+    if (price){newItem.price = price};
+    if (date){newItem.date = date};
+
     let item = await Item.findById(req.params.id);
     if(!item){
       return res.status(400).send("Item not found");

@@ -1,27 +1,36 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const ItemSchema = new Schema({
-    lab: {
+  lab: {
     type: String,
     required: true,
   },
-  machineNumber : {
-    type : String,
-    required : true
+  machineNumber: {
+    type: String,
+    required: true,
   },
   name: {
     type: String,
     required: true,
   },
-  category : {
+  category: {
+    type: String,
+    required: true,
+    default : "Electronics"
+  },
+  subcategory : {
     type : String,
     required : true
   },
-  date :{
-    type : Date,
-    default : Date.now
-  }
+  price : {
+    type : String,
+    required : true,
+    default : 00
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('items',ItemSchema);
-
+module.exports = mongoose.model("items", ItemSchema);
