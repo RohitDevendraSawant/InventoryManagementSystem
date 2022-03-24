@@ -1,6 +1,7 @@
-const connectToMongo = require('./db');
-const express = require('express')
+const express = require("express");
 const mongoose = require("mongoose");
+require('dotenv').config()
+const connectToMongo = require("./db");
 
 
 connectToMongo();
@@ -10,19 +11,22 @@ db.once("open", function () {
   console.log("Connected successfully");
 });
 
-const app = express()
-const port = 5000;
+const app = express();
+const port = process.env.PORT;
 
-app.use(express.json())
+app.use(express.json());
 
 //Available routes
-app.use('/api/auth',require('./routes/auth'));
-app.use('/api/items',require('./routes/items'));
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/items", require("./routes/items"));
+app.use("/api/centralTable", require("./routes/centralTable"));
+app.use("/api/request", require("./routes/requests"));
+app.use("/api/Complaint", require("./routes/complaints"));
 
-app.get('/',(req,res)=>{
-  res.send("Hello");
-})
+app.get("/", (req, res) => {
+  res.send("Welcome to Inventory Management System of DMCE");
+});
 
 app.listen(port, () => {
-  console.log(`Inventory app listening at http://localhost:${port}`)
-})
+  console.log(`Inventory app listening at http://localhost:${port}`);
+});

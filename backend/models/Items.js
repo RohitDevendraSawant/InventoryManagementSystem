@@ -5,7 +5,7 @@ const ItemSchema = new Schema({
     type: String,
     required: true,
   },
-  machineNumber: {
+  configurationNumber: {
     type: String,
     required: true,
   },
