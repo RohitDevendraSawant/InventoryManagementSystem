@@ -1,25 +1,33 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const RequestSchema = new Schema({
-  date: {
-    type: Date,
-    default: Date.now(),
-  },
-  lab : {
-    type : String,
-    required : true,
-  },
-  name: {
+  category: {
     type: String,
     required: true,
   },
-  quantity: {
+  specification: {
+    type: String,
+    required: true,
+  },
+  lab: {
+    type: String,
+    required: true,
+  },
+
+  requiredQuantity: {
+    type: Number,
+    required: true,
+  },
+  recievedQuantity: {
     type: Number,
     default: 0,
   },
-  status: {
+  date: {
     type: String,
     required: true,
+  },
+  status: {
+    type: String,
     default: "Pending",
   },
 });

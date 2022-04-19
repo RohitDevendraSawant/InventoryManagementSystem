@@ -22,6 +22,10 @@ app.use("/api/items", require("./routes/items"));
 app.use("/api/centralTable", require("./routes/centralTable"));
 app.use("/api/request", require("./routes/requests"));
 app.use("/api/Complaint", require("./routes/complaints"));
+app.use("/api/productMaster", require("./routes/productsMaster"));
+app.use("/api/specificationMaster", require("./routes/specificationMaster"));
+
+
 
 app.get("/", (req, res) => {
   res.send("Welcome to Inventory Management System of DMCE");

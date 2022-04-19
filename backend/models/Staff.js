@@ -7,6 +7,15 @@ const StaffSchema = new Schema({
   },
   role: {
     type: String,
+    required: true,
+  },
+  lab: {
+    type: String,
+    default : "Not applicable"
+  },
+  phone: {
+    type: String,
+    required: true,
   },
   email: {
     type: String,

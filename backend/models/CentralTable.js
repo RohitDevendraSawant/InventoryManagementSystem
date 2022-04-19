@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const CentralTableSchema = new Schema({
-  name: {
+  bill: {
+    type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  specification: {
     type: String,
     required: true,
   },
@@ -9,14 +17,13 @@ const CentralTableSchema = new Schema({
     type: Number,
     default: 0,
   },
-  price: {
+  cost: {
     type: Number,
     required: true,
   },
   date: {
-    type: Date,
-    default: Date.now(),
-  }
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("centralTable", CentralTableSchema);

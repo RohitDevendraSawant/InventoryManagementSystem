@@ -1,15 +1,16 @@
-const mongoose = require('mongoose');
-const {schema} = mongoose.Schema;
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const productsMasterSchema = new Schema({
-    serialNo : {
-        type : Number,
-        required : true
-    },
-    category : {
-        type : String,
-        require : true
-    }
-})
+  // serialNo: {
+  //   type: Number,
+  //   required: true,
+  // },
+  category: {
+    type: String,
+    required: true,
+  },
+});
 
-module.exports = mongoose.model('productsMaster', productsMasterSchema);
+const ProductMaster = mongoose.model("productsMaster", productsMasterSchema);
+module.exports = ProductMaster;

@@ -1,18 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const Request = require("../models/Request");
-const fetchUser = require("../middleware/fetchUser");
+const { fetchStaff } = require("../middleware/fetchUser");
 
 // Route 1 : Generate a request using POST : login required
-router.post("/generateRequest", fetchUser, async (req, res) => {
+router.post("/generateRequest", fetchStaff, async (req, res) => {
   try {
-    const { date, lab, name, quantity, status } = req.body;
+    let { category, specification, lab, requiredQuantity, date } = req.body;
+    requiredQuantity = Number(requiredQuantity);
     const request = new Request({
-      date,
+      category,
+      specification,
       lab,
-      name,
-      quantity,
-      status,
+      requiredQuantity,
+      date,
     });
     const generatedRequest = await request.save();
     return res.status(200).json(generatedRequest);
@@ -23,9 +24,15 @@ router.post("/generateRequest", fetchUser, async (req, res) => {
 });
 
 // Route 2 : Fetch all requests using GET : login required
-router.get("/getRequest", fetchUser, async (req, res) => {
+router.get("/getRequest/:lab", fetchStaff, async (req, res) => {
   try {
-    let requests = await Request.find();
+    let requests;
+    if (req.params.lab === "Not applicable" || req.params.lab === "Enter lab number") {
+      requests = await Request.find();
+    }
+    else{
+      requests = await Request.find({lab:req.params.lab});
+    }
     return res.status(200).json(requests);
   } catch (error) {
     console.log(error.message);
@@ -34,7 +41,7 @@ router.get("/getRequest", fetchUser, async (req, res) => {
 });
 
 // Route 3 : Update request using PUT : login required
-router.put("/updateRequest/:id", fetchUser, async (req, res) => {
+router.put("/updateRequest/:id", fetchStaff, async (req, res) => {
   try {
     const { name, quantity, status } = req.body;
     const updatedRequest = {};
@@ -65,7 +72,7 @@ router.put("/updateRequest/:id", fetchUser, async (req, res) => {
 });
 
 // Route 4 : Delete request using DELETE : login required
-router.delete("/deleteRequest/:id", fetchUser, async (req, res) => {
+router.delete("/deleteRequest/:id", fetchStaff, async (req, res) => {
   try {
     let request = await Request.findById(req.params.id);
     if (!request) {

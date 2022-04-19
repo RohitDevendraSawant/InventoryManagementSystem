@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const Complaint = require("../models/Complaint");
-const fetchUser = require("../middleware/fetchUser");
+const { fetchStaff } = require("../middleware/fetchUser");
 const { body, validationResult } = require("express-validator");
 
 // Route 1 : Register complaints using post : Login required
 router.post(
   "/registerComplaint",
-  fetchUser,
+  fetchStaff,
   [body("studentId").isLength({ max: 11 }), body("email").isEmail()],
   async (req, res) => {
     try {
@@ -43,7 +43,7 @@ router.post(
 );
 
 // Route 2 : Get complaints using get : Login required
-router.get("/getComplaint", fetchUser, async (req, res) => {
+router.get("/getComplaint", fetchStaff, async (req, res) => {
   try {
     let complaints = await Complaint.find();
     return res.status(200).json(complaints);
@@ -54,7 +54,7 @@ router.get("/getComplaint", fetchUser, async (req, res) => {
 });
 
 // Route 3 : Update request using PUT : Login required : Id should be provided in header.
-router.put("/updateComplaint/:id", fetchUser, async (req, res) => {
+router.put("/updateComplaint/:id", fetchStaff, async (req, res) => {
   try {
     const {
       lab,
@@ -113,7 +113,7 @@ router.put("/updateComplaint/:id", fetchUser, async (req, res) => {
 });
 
 // Route 4 : Delete request using Delete : Login required : Id should be provided in header.
-router.delete("/deleteComplaint/:id", fetchUser, async (req, res) => {
+router.delete("/deleteComplaint/:id", fetchStaff, async (req, res) => {
   try {
     let complaint = await Complaint.findById(req.params.id);
     if (!complaint) {
