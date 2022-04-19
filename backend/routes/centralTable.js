@@ -149,14 +149,15 @@ router.post("/moveToLab/:id", fetchAssistant, async (req, res) => {
         .json({ message: "Requirement already fulfilled for this request." });
     }
 
-    let updatedRecQuantity = {};
-    updatedRecQuantity.recievedQuantity = request[0].recievedQuantity + 1;
+    let updatedReqData = {};
+    updatedReqData.recievedQuantity = request[0].recievedQuantity + 1;
     if (request[0].requiredQuantity == request[0].recievedQuantity+1) {
-      updatedRecQuantity.status = "Completed"
+      updatedReqData.status = "Completed"
     }
+    updatedReqData.bill = product.bill;
     const update = await Request.findByIdAndUpdate(
       request[0]._id,
-      { $set: updatedRecQuantity },
+      { $set: updatedReqData },
       { new: true }
     );
 

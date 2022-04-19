@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const RequestSchema = new Schema({
+  bill : {
+    type : String
+  },
   category: {
     type: String,
     required: true,

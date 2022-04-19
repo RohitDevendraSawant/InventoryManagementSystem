@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 function Registrations() {
+  const [Visibility, setVisibility] = useState("hidden");
+  const handleClick = () => {
+    if (Visibility === "visible") {
+      setVisibility("hidden");
+    } else {
+      setVisibility("visible");
+    }
+  };
   return (
     <>
       <div className="container W-100 h-100">
@@ -48,21 +56,35 @@ function Registrations() {
                   <label htmlFor="exampleInputPassword1" className="form-label">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="exampleInputPassword1"
-                  />
+                  <div className="row">
+                    <div className="col col-sm-11">
+                      <input
+                        type={Visibility === "visible" ? "text" : "password"}
+                        className="form-control"
+                        id="exampleInputPassword1"
+                      />
+                    </div>
+                    <div className="col col-sm-1 align-items-center">
+                      <i
+                        className= { Visibility === 'hidden'?'fa fa-solid fa-eye':"fa fa-solid fa-eye-slash"}
+                        onClick={handleClick}
+                      ></i>
+                    </div>
+                  </div>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="confirmPassword" className="form-label">
+                  <label htmlFor="exampleInputPassword1" className="form-label">
                     Confirm Password
                   </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="confirmPassword"
-                  />
+                  <div className="row">
+                    <div className="col col-sm-12">
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="exampleInputPassword1"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <button type="submit" className="btn btn-success">
                   Sign Up

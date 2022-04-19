@@ -5,8 +5,8 @@ function Login() {
     <>
       <div className="container W-100 h-100">
         {/* main container */}
-        <div className="row my-5 justify-content-md-center shadow p-3 mb-5 bg-body rounded">
-          <div className="col col-sm-7">
+        <div className="row my-5 justify-content-md-center shadow p-2 mb-5 bg-body rounded">
+          <div className="col col-sm-5">
             <div className="form mt-4">
               {/* Form container */}
               <form>
