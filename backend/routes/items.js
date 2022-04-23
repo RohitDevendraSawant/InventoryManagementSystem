@@ -3,6 +3,7 @@ const router = express.Router();
 const Item = require("../models/Items");
 const { fetchStaff } = require("../middleware/fetchUser");
 const { body, validationResult } = require("express-validator");
+const Scrap = require("../models/Scrap");
 
 // Add items using POST, login required
 router.post("/addItem", fetchStaff, async (req, res) => {
@@ -136,5 +137,23 @@ router.put("/updateItems/:id", fetchStaff, async (req, res) => {
     return res.status(500).json("Internal server error");
   }
 });
+
+router.delete("/deleteItems/:id",fetchStaff, async (req,res)=>{
+  try {
+    let item = await Item.findById(req.params.id);
+    let scrap = new Scrap({
+      lab : item.lab,
+      configurationNumber : item.configurationNumber,
+      category : item.category,
+      specification : item.specification
+    });
+    let scrapItem = await scrap.save();
+    let deletedItem = await Item.findByIdAndDelete(req.params.id);
+    return res.status(200).json({message : "Item moved to scrap",scrapItem, deletedItem})
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({message : "Internal server error"});
+  }
+})
 
 module.exports = router;

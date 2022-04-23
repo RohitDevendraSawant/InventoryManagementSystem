@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 require('dotenv').config()
 const connectToMongo = require("./db");
+const cors = require('cors')
 
 
 connectToMongo();
@@ -15,6 +16,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use(cors());
 
 //Available routes
 app.use("/api/auth", require("./routes/auth"));
@@ -24,6 +26,9 @@ app.use("/api/request", require("./routes/requests"));
 app.use("/api/Complaint", require("./routes/complaints"));
 app.use("/api/productMaster", require("./routes/productsMaster"));
 app.use("/api/specificationMaster", require("./routes/specificationMaster"));
+app.use("/api/statistics", require("./routes/statistics"))
+app.use("/api/scrap", require("./routes/scrap"))
+
 
 
 
