@@ -211,4 +211,9 @@ router.post("/moveToLab/:id", fetchAssistant, async (req, res) => {
   }
 });
 
+router.get("/getMovedProducts/:id",fetchAssistant, async (req,res)=>{
+  const products = await MoveTo.find({prod_id : req.params.id});
+  return res.status(200).json(products);
+})
+
 module.exports = router;
