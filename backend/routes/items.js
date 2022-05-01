@@ -30,16 +30,12 @@ router.post("/addItem", fetchStaff, async (req, res) => {
 });
 
 // Get items using GET, login required
-router.post("/getItems/:lab", fetchStaff, async (req, res) => {
+router.post("/getItems", fetchStaff, async (req, res) => {
   try {
     let items;
     const { configurationNumber, category, specification } = req.body;
-    if (req.params.lab === "Not applicable" || req.params.lab === "Enter lab number") {
-      items = await Item.find()
-    }
-    else{
-      items = await Item.find({ lab: req.params.lab });
-    }
+    items = await Item.find();
+    
 
     if (category && specification && configurationNumber) {
       // let itemsList = await items.find({
@@ -57,42 +53,42 @@ router.post("/getItems/:lab", fetchStaff, async (req, res) => {
       // let itemsList = await items.find({
       //   $and: [{ category: category }, { subcategory: subcategory }],
       // });
-      let itemsList = items.filter((ele) => {
-        return ele.category === category && ele.specification === specification;
-      });
-      return res.status(200).json(itemsList);
-    } else if (category && configurationNumber) {
-      // let itemsList = await items.find({
-      //   $and: [{ category: category }, { subcategory: subcategory }],
+      // let itemsList = items.filter((ele) => {
+      //   return ele.category === category && ele.specification === specification;
       // });
-      let itemsList = items.filter((ele) => {
-        return (
-          ele.category === category &&
-          ele.configurationNumber === configurationNumber
-        );
+      // return res.status(200).json(itemsList);
+      const items = await Item.find({$and : [{category : category},{specification : specification}]});
+      return res.status(200).json(items);
+    } else if (category && configurationNumber) {
+      let itemsList = await Item.find({
+        $and: [{ category: category }, { subcategory: subcategory }],
       });
+      // let itemsList = items.filter((ele) => {
+      //   return (
+      //     ele.category === category &&
+      //     ele.configurationNumber === configurationNumber
+      //   );
+      // });
       return res.status(200).json(itemsList);
     } else if (configurationNumber && specification) {
-      // let itemsList = await items.find({
-      //   $and: [{ category: category }, { subcategory: subcategory }],
-      // });
-      let itemsList = items.filter((ele) => {
-        return (
-          ele.configurationNumber === configurationNumber &&
-          ele.specification === specification
-        );
+      let itemsList = await Item.find({
+        $and: [{ category: category }, { subcategory: subcategory }],
       });
+      // let itemsList = items.filter((ele) => {
+      //   return (
+      //     ele.configurationNumber === configurationNumber &&
+      //     ele.specification === specification
+      //   );
+      // });
       return res.status(200).json(itemsList);
     } else if (category) {
-      let itemsList = items.filter((ele) => ele.category === category);
+      let itemsList = await Item.find({category});
       return res.status(200).json(itemsList);
     } else if (specification) {
-      let itemsList = await items.find({ subcategory: subcategory });
+      let itemsList = await Item.find({specification});
       return res.status(200).json(itemsList);
     } else if (configurationNumber) {
-      let itemsList = items.filter(
-        (ele) => ele.configurationNumber === configurationNumber
-      );
+      let itemsList = await Item.find({configurationNumber});
       return res.status(200).json(itemsList);
     }
     return res.status(200).json(items);

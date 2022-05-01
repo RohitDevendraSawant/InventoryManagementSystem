@@ -1,9 +1,9 @@
 const express = require("express")
 const router = express.Router();
 const Item = require("../models/Items");
-const {fetchAssistant} = require("../middleware/fetchUser");
+const {fetchAssistant, fetchStaff} = require("../middleware/fetchUser");
 
-router.post("/getCount",fetchAssistant,async(req,res)=>{
+router.post("/getCount",fetchStaff,async(req,res)=>{
     try {
         const {lab, category, specification} = req.body;
         console.log("lab:",lab)

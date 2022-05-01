@@ -3,7 +3,7 @@ const Scrap = require("../models/Scrap");
 const router = express.Router();
 const {fetchStaff} = require("../middleware/fetchUser")
 
-router.get("/getScrap",fetchStaff, async(req, res)=>{
+router.get("/getScrap", async(req, res)=>{
     try {
         const scrapItems = await Scrap.find();
         return res.status(200).json(scrapItems);

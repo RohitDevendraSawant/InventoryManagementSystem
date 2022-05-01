@@ -3,13 +3,17 @@ const router = express.Router();
 const centralTable = require("../models/CentralTable");
 const Request = require("../models/Request");
 const Item = require("../models/Items");
+const MoveTo = require("../models/MoveTo");
 const { fetchAssistant, fetchStaff } = require("../middleware/fetchUser");
+const { findByIdAndUpdate } = require("../models/CentralTable");
 
 // Route 1 : add items into central table using POST : Login required
 router.post("/addItem", fetchAssistant, async (req, res) => {
   try {
     const { bill, category, specification, quantity, cost, date } = req.body;
-    let item = await centralTable.findOne({ specification });
+    let item = await centralTable.findOne({
+      $and: [{ category: category }, { specification: specification }],
+    });
 
     if (item) {
       const updatedData = {};
@@ -133,7 +137,7 @@ router.post("/moveToLab/:id", fetchAssistant, async (req, res) => {
       return res.status(400).json({ message: "Product not found" });
     }
 
-    if(product.quantity <= 0){
+    if (product.quantity <= 0) {
       return res.status(500).json("Product not exists");
     }
     let request = await Request.find({ lab, category, specification });
@@ -151,8 +155,8 @@ router.post("/moveToLab/:id", fetchAssistant, async (req, res) => {
 
     let updatedReqData = {};
     updatedReqData.recievedQuantity = request[0].recievedQuantity + 1;
-    if (request[0].requiredQuantity == request[0].recievedQuantity+1) {
-      updatedReqData.status = "Completed"
+    if (request[0].requiredQuantity == request[0].recievedQuantity + 1) {
+      updatedReqData.status = "Completed";
     }
     updatedReqData.bill = product.bill;
     const update = await Request.findByIdAndUpdate(
@@ -160,12 +164,12 @@ router.post("/moveToLab/:id", fetchAssistant, async (req, res) => {
       { $set: updatedReqData },
       { new: true }
     );
-
-    let updatedQuantity = {};
-    updatedQuantity.quantity = product.quantity - 1;
+    console.log(request[0].lab, request[0].recievedQuantity);
+    let updatedCentraData = {};
+    updatedCentraData.quantity = product.quantity - 1;
     const updateCentralQuantity = await centralTable.findByIdAndUpdate(
       product._id,
-      { $set: updatedQuantity },
+      { $set: updatedCentraData },
       { new: true }
     );
 
@@ -176,6 +180,27 @@ router.post("/moveToLab/:id", fetchAssistant, async (req, res) => {
       date,
     });
     const addItem = await item.save();
+
+    const prod = await MoveTo.find({
+      $and: [{ prod_id: req.params.id }, { lab: lab }],
+    });
+
+    console.log("prod : ",prod);
+    if (prod) {
+      await MoveTo.findByIdAndUpdate(
+        prod[0]._id,
+        { $set: { quantity: request[0].recievedQuantity, date: date } },
+        { new: true }
+      );
+    } else {
+      const moved = new MoveTo({
+        prod_id: req.params.id,
+        date: date,
+        lab: lab,
+        quantity: request[0].recievedQuantity,
+      });
+      await moved.save();
+    }
 
     return res.status(200).json({
       message: "operation successful.",
